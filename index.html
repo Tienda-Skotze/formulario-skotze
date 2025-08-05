@@ -88,32 +88,35 @@
   </form>
 
   <script>
-    document.querySelector("#formulario").addEventListener("submit", function (e) {
-  e.preventDefault();
+   document.querySelector("#formulario").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-  const datos = new URLSearchParams();
-  datos.append("nombreProducto", document.querySelector("#nombreProducto").value);
-  datos.append("talla", document.querySelector("#talla").value);
-  datos.append("precio", document.querySelector("#precio").value);
-  datos.append("stock", document.querySelector("#stock").value);
-  datos.append("imagenURL", document.querySelector("#imagenURL").value);
+    const nombreProducto = document.querySelector("#nombreProducto").value;
+    const talla = document.querySelector("#talla").value;
+    const precio = document.querySelector("#precio").value;
+    const stock = document.querySelector("#stock").value;
+    const imagenURL = document.querySelector("#imagenURL").value;
 
-  fetch("https://script.google.com/macros/s/AKfycbxfoaf-bsX-DI4n2yZNlttVb-3PHOLI4x6P1Ck1A3B0F2CH69uF9__sUTFIOr37TwzJ/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: datos.toString()
-  })
-  .then(response => response.text())
-  .then(mensaje => {
-    document.querySelector("#resultado").textContent = mensaje;
-  })
-  .catch(error => {
-    console.error("❌ Error registrando el producto:", error);
-    document.querySelector("#resultado").textContent = "Error al registrar el producto.";
+    const url = new URL("https://script.google.com/macros/s/AKfycbxfoaf-bsX-DI4n2yZNlttVb-3PHOLI4x6P1Ck1A3B0F2CH69uF9__sUTFIOr37TwzJ/exec");
+    url.searchParams.append("nombreProducto", nombreProducto);
+    url.searchParams.append("talla", talla);
+    url.searchParams.append("precio", precio);
+    url.searchParams.append("stock", stock);
+    url.searchParams.append("imagenURL", imagenURL);
+
+    fetch(url, {
+      method: "GET"
+    })
+    .then(res => res.text())
+    .then(mensaje => {
+      document.querySelector("#resultado").textContent = mensaje;
+    })
+    .catch(err => {
+      console.error("❌ Error registrando el producto:", err);
+      document.querySelector("#resultado").textContent = "Error al registrar el producto.";
+    });
   });
-});
+
 
   </script>
 </body>
