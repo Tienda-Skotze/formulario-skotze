@@ -3,118 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulario de Inventario - Skotze</title>
+  <title>Registrar Producto</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 2rem;
-    }
-    h1 {
-      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
       color: #333;
+      margin: 0;
+      padding: 20px;
     }
+
+    h2 {
+      text-align: center;
+      color: #0078D7;
+    }
+
     form {
-      max-width: 500px;
+      max-width: 400px;
       margin: 0 auto;
+      padding: 20px;
       background: white;
-      padding: 2rem;
       border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     label {
       display: block;
-      margin-top: 1rem;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.3rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 1.5rem;
-      padding: 0.7rem;
-      width: 100%;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      margin-top: 15px;
       font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: #0078D7;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
-    img {
-      margin-top: 1rem;
-      max-width: 100%;
-      border-radius: 4px;
+
+    button:hover {
+      background: #005ea2;
+    }
+
+    .mensaje {
+      margin-top: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+  <h2>Registro de Nuevo Producto</h2>
+  <form id="formProducto">
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" required />
 
-  <h1>Registro de Producto</h1>
+    <label for="talla">Talla:</label>
+    <input type="text" name="talla" required />
 
-  <form>
-    <label for="idProducto">ID del Producto</label>
-    <input type="text" name="idProducto" required />
-
-    <label for="nombreProducto">Nombre del Producto</label>
-    <input type="text" name="nombreProducto" required />
-
-    <label for="imagenURL">URL de Imagen</label>
-    <input type="url" name="imagenURL" id="imagenURL" />
-
-    <img id="preview" src="" alt="Vista previa imagen" style="display: none;" />
-
-    <label for="talla">Talla</label>
-    <select name="talla" required>
-      <option value="">Seleccionar</option>
-      <option value="XS">XS</option>
-      <option value="S">S</option>
-      <option value="M">M</option>
-      <option value="L">L</option>
-      <option value="XL">XL</option>
-    </select>
-
-    <label for="precio">Precio</label>
+    <label for="precio">Precio:</label>
     <input type="number" name="precio" required />
 
-    <label for="stock">Stock</label>
+    <label for="stock">Stock:</label>
     <input type="number" name="stock" required />
 
+    <label for="imagen">URL Imagen:</label>
+    <input type="url" name="imagen" required />
+
     <button type="submit">Registrar Producto</button>
+    <div class="mensaje" id="mensaje"></div>
   </form>
 
   <script>
-    // Preview de imagen al pegar la URL
-    document.getElementById("imagenURL").addEventListener("input", function () {
-      const url = this.value;
-      const preview = document.getElementById("preview");
-      if (url) {
-        preview.src = url;
-        preview.style.display = "block";
-      } else {
-        preview.style.display = "none";
-      }
-    });
-
-    // Envío al backend (Google Sheets)
-    document.querySelector("form").addEventListener("submit", function (e) {
+    document.getElementById("formProducto").addEventListener("submit", function(e) {
       e.preventDefault();
-      const datos = Object.fromEntries(new FormData(this));
+
+      const datos = new FormData(e.target);
+      const objeto = Object.fromEntries(datos.entries());
 
       fetch("https://script.google.com/macros/s/AKfycbxfoaf-bsX-DI4n2yZNlttVb-3PHOLI4x6P1Ck1A3B0F2CH69uF9__sUTFIOr37TwzJ/exec", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datos)
+        body: JSON.stringify(objeto),
+        headers: {
+          "Content-Type": "application/json"
+        }
       })
-      .then(res => res.text())
-      .then(msj => alert(msj))
-      .catch(err => alert("Error al enviar: " + err));
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("mensaje").textContent = "✅ Producto registrado con ID: " + data.nuevoID;
+        e.target.reset();
+      })
+      .catch(err => {
+        console.error("❌ Error registrando el producto:", err);
+        document.getElementById("mensaje").textContent = "❌ Error registrando el producto";
+      });
     });
   </script>
-
 </body>
 </html>
