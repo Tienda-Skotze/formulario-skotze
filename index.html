@@ -1,15 +1,120 @@
-<script>
-  document.querySelector('form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const datos = Object.fromEntries(new FormData(this));
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario de Inventario - Skotze</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.7rem;
+      width: 100%;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    img {
+      margin-top: 1rem;
+      max-width: 100%;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
 
-    fetch('https://script.google.com/macros/s/AKfycbxfoaf-bsX-DI4n2yZNlttVb-3PHOLI4x6P1Ck1A3B0F2CH69uF9__sUTFIOr37TwzJ/exec', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(datos)
-    })
-    .then(res => res.text())
-    .then(msj => alert(msj))
-    .catch(err => alert("Error al enviar: " + err));
-  });
-</script>
+  <h1>Registro de Producto</h1>
+
+  <form>
+    <label for="idProducto">ID del Producto</label>
+    <input type="text" name="idProducto" required />
+
+    <label for="nombreProducto">Nombre del Producto</label>
+    <input type="text" name="nombreProducto" required />
+
+    <label for="imagenURL">URL de Imagen</label>
+    <input type="url" name="imagenURL" id="imagenURL" />
+
+    <img id="preview" src="" alt="Vista previa imagen" style="display: none;" />
+
+    <label for="talla">Talla</label>
+    <select name="talla" required>
+      <option value="">Seleccionar</option>
+      <option value="XS">XS</option>
+      <option value="S">S</option>
+      <option value="M">M</option>
+      <option value="L">L</option>
+      <option value="XL">XL</option>
+    </select>
+
+    <label for="precio">Precio</label>
+    <input type="number" name="precio" required />
+
+    <label for="stock">Stock</label>
+    <input type="number" name="stock" required />
+
+    <button type="submit">Registrar Producto</button>
+  </form>
+
+  <script>
+    // Preview de imagen al pegar la URL
+    document.getElementById("imagenURL").addEventListener("input", function () {
+      const url = this.value;
+      const preview = document.getElementById("preview");
+      if (url) {
+        preview.src = url;
+        preview.style.display = "block";
+      } else {
+        preview.style.display = "none";
+      }
+    });
+
+    // Envío al backend (Google Sheets)
+    document.querySelector("form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const datos = Object.fromEntries(new FormData(this));
+
+      fetch("https://script.google.com/macros/s/AKfycbxfoaf-bsX-DI4n2yZNlttVb-3PHOLI4x6P1Ck1A3B0F2CH69uF9__sUTFIOr37TwzJ/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos)
+      })
+      .then(res => res.text())
+      .then(msj => alert(msj))
+      .catch(err => alert("Error al enviar: " + err));
+    });
+  </script>
+
+</body>
+</html>
