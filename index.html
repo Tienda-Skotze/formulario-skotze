@@ -1,0 +1,15 @@
+<script>
+  document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const datos = Object.fromEntries(new FormData(this));
+
+    fetch('https://script.google.com/macros/s/AKfycbxfoaf-bsX-DI4n2yZNlttVb-3PHOLI4x6P1Ck1A3B0F2CH69uF9__sUTFIOr37TwzJ/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos)
+    })
+    .then(res => res.text())
+    .then(msj => alert(msj))
+    .catch(err => alert("Error al enviar: " + err));
+  });
+</script>
