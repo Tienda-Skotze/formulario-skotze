@@ -68,8 +68,8 @@
 <body>
   <h2>Registro de Nuevo Producto</h2>
   <form id="formProducto">
-    <label for="nombre">Nombre:</label>
-    <input type="text" name="nombre" required />
+    <label for="nombreProducto">Nombre del producto:</label>
+    <input type="text" name="nombreProducto" required />
 
     <label for="talla">Talla:</label>
     <input type="text" name="talla" required />
@@ -80,8 +80,8 @@
     <label for="stock">Stock:</label>
     <input type="number" name="stock" required />
 
-    <label for="imagen">URL Imagen:</label>
-    <input type="url" name="imagen" />
+    <label for="imagenURL">URL Imagen (opcional):</label>
+    <input type="url" name="imagenURL" />
 
     <button type="submit">Registrar Producto</button>
     <div class="mensaje" id="mensaje"></div>
@@ -101,9 +101,9 @@
           "Content-Type": "application/json"
         }
       })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("mensaje").textContent = "✅ Producto registrado con ID: " + data.nuevoID;
+      .then(res => res.text())
+      .then(mensaje => {
+        document.getElementById("mensaje").textContent = "✅ " + mensaje;
         e.target.reset();
       })
       .catch(err => {
