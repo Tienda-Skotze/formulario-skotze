@@ -88,37 +88,33 @@
   </form>
 
   <script>
-    document.getElementById("formProducto").addEventListener("submit", function(e) {
-      e.preventDefault();
+    document.querySelector("#formulario").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-      const datos = new FormData(e.target);
-      const objeto = Object.fromEntries(datos.entries());
+  const datos = new URLSearchParams();
+  datos.append("nombreProducto", document.querySelector("#nombreProducto").value);
+  datos.append("talla", document.querySelector("#talla").value);
+  datos.append("precio", document.querySelector("#precio").value);
+  datos.append("stock", document.querySelector("#stock").value);
+  datos.append("imagenURL", document.querySelector("#imagenURL").value);
 
-      const parametros = new URLSearchParams()
-      parametros.append("nombreProducto", document.getElementById("nombreProducto").value)
-      parametros.append("talla", document.getElementById("talla").value)
-      parametros.append("precio", document.getElementById("precio").value)
-      parametros.append("stock", document.getElementById("stock").value)
-      parametros.append("imagenURL", document.getElementById("imagenURL").value)
+  fetch("https://script.google.com/macros/s/AKfycbxfoaf-bsX-DI4n2yZNlttVb-3PHOLI4x6P1Ck1A3B0F2CH69uF9__sUTFIOr37TwzJ/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: datos.toString()
+  })
+  .then(response => response.text())
+  .then(mensaje => {
+    document.querySelector("#resultado").textContent = mensaje;
+  })
+  .catch(error => {
+    console.error("❌ Error registrando el producto:", error);
+    document.querySelector("#resultado").textContent = "Error al registrar el producto.";
+  });
+});
 
-      fetch("https://script.google.com/macros/s/AKfycbxfoaf-bsX-DI4n2yZNlttVb-3PHOLI4x6P1Ck1A3B0F2CH69uF9__sUTFIOr37TwzJ/exec", {
-        method: "POST",
-        body: parametros,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      })
-      .then(res => res.text())
-      .then(mensaje => {
-        document.getElementById("mensaje").textContent = "✅ " + mensaje
-        document.getElementById("formProducto").reset() // ← esto reemplaza e.target.reset()
-      })
-      .catch(err => {
-        console.error("❌ Error registrando el producto:", err)
-        document.getElementById("mensaje").textContent = "❌ Error registrando el producto"
-      })
-
-    });
   </script>
 </body>
 </html>
